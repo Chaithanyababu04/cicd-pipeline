@@ -1,24 +1,31 @@
-pipeline{
+pipeline {
     agent any
-    stages{
-        stage('Build'){
-            steps{
+
+    environment {
+        PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+    }
+
+    stages {
+        stage('Verify Docker') {
+            steps {
+                sh 'which docker'
+                sh 'docker --version'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
                 sh 'docker build -t cicd-demo:latest .'
             }
         }
-        stage('Test'){
-            steps{
-                echo 'Testing the application...'
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh '''
+                kubectl delete deployment cicd-app --ignore-not-found=true
+                kubectl apply -f deployment.yaml
+                '''
             }
         }
-        stage('Deploy'){
-            steps{
-                sh ''' 
-                kubectl delete deployment cicd-app -- ignore-not-found =true
-                
-                kubectl apply -f deployment.yaml         
-                ''' 
-        }
     }
-}
 }
