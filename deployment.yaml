@@ -13,9 +13,8 @@ spec:
         app: cicd-app
     spec:
       containers:
-      - name: cicd-app
-        image: cicd-app:latest
-        ports:
-        imagePullPolicy: Never
-        - containerPort: 5000     
-        
+        - name: cicd-container
+          image: cicd-demo:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5000
