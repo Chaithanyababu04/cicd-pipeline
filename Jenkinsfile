@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-        IMAGE_NAME = "chaithanyababu/cicd-demo:latest"
+        IMAGE_NAME = "chaitanya010104/cicd-demo:latest"
     }
 
     stages {
