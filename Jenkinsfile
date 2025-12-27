@@ -3,19 +3,19 @@ pipeline {
 
     environment {
         PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+        IMAGE_NAME = "chaithanyababu/cicd-demo:latest"
     }
 
     stages {
-        stage('Verify Docker') {
+        stage('Build Image') {
             steps {
-                sh 'which docker'
-                sh 'docker --version'
+                sh 'docker build -t $IMAGE_NAME .'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Push Image') {
             steps {
-                sh 'docker build -t cicd-demo:latest .'
+                sh 'docker push $IMAGE_NAME'
             }
         }
 
@@ -29,3 +29,4 @@ pipeline {
         }
     }
 }
+
