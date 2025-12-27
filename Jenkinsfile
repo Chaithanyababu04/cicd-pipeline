@@ -13,10 +13,17 @@ pipeline {
             }
         }
 
-        stage('Push Image') {
+        stage('Login & Push Image') {
             steps {
-           withDockerRegistry(credentialsId: 'dockerhub-creds', url: '') {
-                    sh 'docker push $IMAGE_NAME'
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker push $IMAGE_NAME
+                    '''
                 }
             }
         }
@@ -24,11 +31,10 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sh '''
-                kubectl delete deployment cicd-app --ignore-not-found=true
-                kubectl apply -f deployment.yaml
+                    kubectl delete deployment cicd-app --ignore-not-found=true
+                    kubectl apply -f deployment.yaml
                 '''
             }
         }
     }
 }
-
